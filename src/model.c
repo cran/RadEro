@@ -43,15 +43,6 @@
 #define TXTNUM3 "_num3.txt"
 
 
-//void print_current_directory() {
-//    char cwd[PATH_MAX];
-//    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-//        printf("Currrent wd: %s\n", cwd);
-//    } else {
-//        perror("Error by acquiring wd");
-//    }
-//}
-
 int cs_model(void)
 {
 	// Check usage

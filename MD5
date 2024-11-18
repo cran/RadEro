@@ -1,9 +1,9 @@
-5f4c0c5a8fcf0295be76fecdca856882 *DESCRIPTION
+264e5b93d0bdfbdbd4cdd668615ac09f *DESCRIPTION
 82ed0b2026860c591a68a5ffa86ea9b7 *NAMESPACE
 b433e7ba888a9b2671fe3a0ea018cb00 *R/RadEro-package.R
 28a87e9f68e1b6c277bbd6d448869b36 *R/RadEro_example.R
 281ea339aa038c55338123358e1b1487 *R/RadEro_run.R
-ad48c11fc0545419c51f07365d70850c *R/RcppExports.R
+9610958b3d2e20b879c15645b028faae *R/RcppExports.R
 18cf2db55c6b29f7096fd283d5bfa399 *R/plot.R
 a0b002dc49d9b861c2cbb549bb76d6c7 *R/resample_config.R
 93060a50535fefbb126e4dac8feacb43 *R/resample_data.R
@@ -15,12 +15,12 @@ c06aad6fb98fd5a0e90b30c359e90d51 *man/RadEro_run.Rd
 6f2bd6e1e993649100b52e3084d41961 *man/plot.Rd
 722afef56dce2c30564aef158e2efeb6 *man/resample_config.Rd
 56afdd3be1602a5f3155cd1034663875 *man/resample_data.Rd
-5d02a9a715ab6025c7b5b87d6dce6f3b *src/RcppExports.cpp
+1eec56404697a9b62b79d19c0f9d4f91 *src/RcppExports.cpp
 8460136f6fe5f6fe01977f926058534e *src/cJSON.c
 26bc3fe0119bd9b3663189e9c93e226e *src/cJSON.h
 a6753669e0d8f29eb943d09969dc3da9 *src/data_io.h
 bac46431ac1dbef5b4b43980575eb529 *src/defs.h
-5838605605a4c4190697db2013312e9b *src/model.c
+d953aeeb1b7e7d751a61ad091ca1cfd7 *src/model.c
 eb684b3673208660c4599b1445c73881 *src/optimization.h
-fd6b33553faffdd4a597fc706d072868 *src/rcpp_hello_world.cpp
+e2bf6e1fde5aadca9cd99c798843bab2 *src/rcpp_hello_world.cpp
 598146d9c5b1d9a6266c1340c7116297 *src/simulation.h

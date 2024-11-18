@@ -1,11 +1,11 @@
 Package: RadEro
 Type: Package
 Title: Cs-137 Conversion Model
-Version: 1.0.4
-Date: 2024-10-30
+Version: 1.0.5
+Date: 2024-11-18
 Authors@R: c(
-    person(given = "Arturo", family = "Catala", role = c("aut", "cre"), email = "acatalae@gmail.com"),
-    person(given = "Borja", family = "Latorre", role = c("aut", "ctb", "cph"), email = "borja.latorre@csic.es"),
+    person(given = "Arturo", family = "Catala", role = c("aut", "cre"), email = "radero@eead.csic.es"),
+    person(given = "Borja", family = "Latorre", role = c("aut", "ctb", "cph")),
     person(given = "Leticia", family = "Gaspar", role = "aut"),
     person(given = "Ana", family = "Navas", role = "aut"),
     person(given = "Dave", family = "Gamble", role = "ctb", comment = "Author of the cJSON.h library"))
@@ -16,7 +16,7 @@ Description: A straightforward model to estimate soil migration rates across var
 	from soil samples (e.g., fine fraction density, effective volume) to accurately capture the 137Cs distribution within the soil profile. 
 	The model simulates annual 137Cs fallout, radioactive decay, and vertical diffusion, with the diffusion coefficient calculated 
 	from 137Cs reference inventory profiles. Additionally, it allows users to input custom parameters as calibration coefficients. 
-	This tool and its code are openly accessible, facilitating usage in soil erosion studies. 
+	The RadEro user manual and protocol, including detailed instructions on how to format input data and configuration files, can be found at the following link: <https://github.com/eead-csic-eesa/RadEro>.
 License: GPL (>= 2)
 Depends: R (>= 4.3.0)
 Imports: Rcpp (>= 1.0.11), dplyr (>= 1.1.4), roxygen2 (>= 7.2.3),
@@ -26,13 +26,13 @@ Imports: Rcpp (>= 1.0.11), dplyr (>= 1.1.4), roxygen2 (>= 7.2.3),
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2024-11-08 09:55:28 UTC; artur
+Packaged: 2024-11-18 16:01:34 UTC; artur
 RoxygenNote: 7.3.1
 Author: Arturo Catala [aut, cre],
   Borja Latorre [aut, ctb, cph],
   Leticia Gaspar [aut],
   Ana Navas [aut],
   Dave Gamble [ctb] (Author of the cJSON.h library)
-Maintainer: Arturo Catala <acatalae@gmail.com>
+Maintainer: Arturo Catala <radero@eead.csic.es>
 Repository: CRAN
-Date/Publication: 2024-11-11 20:20:01 UTC
+Date/Publication: 2024-11-18 23:50:25 UTC

@@ -1,8 +1,8 @@
 Package: RadEro
 Type: Package
 Title: Cs-137 Conversion Model
-Version: 1.0.5
-Date: 2024-11-18
+Version: 1.0.8
+Date: 2025-05-09
 Authors@R: c(
     person(given = "Arturo", family = "Catala", role = c("aut", "cre"), email = "radero@eead.csic.es"),
     person(given = "Borja", family = "Latorre", role = c("aut", "ctb", "cph")),
@@ -26,8 +26,8 @@ Imports: Rcpp (>= 1.0.11), dplyr (>= 1.1.4), roxygen2 (>= 7.2.3),
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2024-11-18 16:01:34 UTC; artur
-RoxygenNote: 7.3.1
+Packaged: 2025-05-09 19:23:20 UTC; artur
+RoxygenNote: 7.3.2
 Author: Arturo Catala [aut, cre],
   Borja Latorre [aut, ctb, cph],
   Leticia Gaspar [aut],
@@ -35,4 +35,4 @@ Author: Arturo Catala [aut, cre],
   Dave Gamble [ctb] (Author of the cJSON.h library)
 Maintainer: Arturo Catala <radero@eead.csic.es>
 Repository: CRAN
-Date/Publication: 2024-11-18 23:50:25 UTC
+Date/Publication: 2025-05-09 19:40:02 UTC

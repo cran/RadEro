@@ -18,6 +18,43 @@
 # These variables are part of the plotting function and are referenced within ggplot calls.
 utils::globalVariables(c("x", "y", "depth1", "num2", "midPROF", "invCS"))
 
+resample <- function(df1, df2)
+{
+		for(i in 1:nrow(df2))
+		{
+			z1 <- df2$z1[i]
+			z2 <- df2$z2[i]
+			
+			cs <- 0.0
+			for(j in 1:nrow(df1))
+			{
+				oz1 <- df1$z1[j]
+				oz2 <- df1$z2[j]
+				ocs <- df1$cs[j]
+				
+				if(z1 < oz1 && z2 > oz1 && z2 <= oz2)
+				{
+					cs = cs + ocs * (z2-oz1) / (oz2-oz1)
+				}
+				else if(z1 >= oz1 && z2 <= oz2)
+				{
+					cs = cs + ocs * (z2-z1) / (oz2-oz1)
+				}
+				else if(z1 >= oz1 && z1 <= oz2 && z2 > oz2)
+				{
+					cs = cs + ocs * (oz2-z1) / (oz2-oz1)
+				}
+				else if(z1 <= oz1 && z2 >= oz2)
+				{
+					cs = cs + ocs
+				}
+			}
+			df2$cs[i] <- cs
+		}
+		
+		df2
+}
+
 plot <- function(data1, data2, dir1, dir2, AxisMaxValue, cell_value) {
 
   # Create results folder.
@@ -39,6 +76,13 @@ plot <- function(data1, data2, dir1, dir2, AxisMaxValue, cell_value) {
   depthrow <- seq(0.01, depth, by = cell)
   # Create dataframe 'datafr_numexp', from the input '_num.txt' and the already defined 'depthrow', to store simulated data.
   datafr_numexp <- data.frame(depth1 = depthrow, num1 = num_read$V1, num2 = (num_read$V2)/cell) # Multiply by the cell size to calculate Bq/m3
+  
+  exp <- data.frame(data2[, c("depth_i", "depth_f", "Cs137_invt")])
+  colnames(exp) <- c("z1", "z2", "cs")
+  sim <- data.frame(z1 = depthrow-cell_value, z2 = depthrow, cs = num_read$V2) # Multiply by the cell size to calculate Bq/m3
+  sim <- resample(sim, exp)
+  data3_mod <-data.frame(id = data2$id, midPROF=(data2$depth_i+((data2$depth_f-data2$depth_i)/2)), y=data2$Cs137_invt*100/(data2$depth_f*100-data2$depth_i*100), invCS=sim$cs)
+
   # Read '_exp.txt' in 'exp_read.' the experimental data for unit cell.
   exp_data <- read.table(file.path(dir1, "_exp.txt"), comment.char = "#")
   exp_read <- data.frame(cs_inv = (exp_data$V1)/cell) # Multiply by the cell size to calculate Bq/m3
@@ -52,9 +96,9 @@ plot <- function(data1, data2, dir1, dir2, AxisMaxValue, cell_value) {
 
   # Preparation of limits, ranges and axis values. |||||||||| WARNING: PLOTS ARE ROTATED TO ADABT THE STEP-PLOT TO A VERTICAL PROFILE, defined x axis here will be y axis in the resulting plot. ||||||||||
   # Total experimental inventory 'expinv' to add in the results legend.
-  expinv <- round(sum(data2$Cs137_invt))
+  expinv <- sum(data2$Cs137_invt)
   # Total simulated inventory 'siminv' to add in the results legend.
-  siminv <- round(sum(plot_data$num2*cell))
+  siminv <- sum(plot_data$num2*cell)
 
   # Define the maximum inventory between all the profiles in 'plot_data'.
   if (is.null(AxisMaxValue)) {
@@ -109,6 +153,12 @@ plot <- function(data1, data2, dir1, dir2, AxisMaxValue, cell_value) {
   step_exp <- data.frame(x = c( plot_data[["depth1"]]))
   step_exp$y <- inv_exp(step_exp$x)
 
+
+	if(nrow(exp) == 1) # bulk profile
+	{
+		plot_data$num2 <- plot_data$cs_inv * siminv / expinv
+	}
+
   p_base <- ggplot(plot_data) +
     # Range and orientation of the y-axis of inventory step-plot.
     coord_flip(ylim= y_range, expand = FALSE) +
@@ -118,11 +168,12 @@ plot <- function(data1, data2, dir1, dir2, AxisMaxValue, cell_value) {
     # Experimental Inventory step-plot.
     geom_step(data = step_exp, aes(x = x, y = y, color="Exp. inv."),direction= "vh" ) +
     # Segmented Line: Simulated Inventory.
-    geom_segment(aes(x = depth1, y = num2, xend = dplyr::lead(depth1), yend =dplyr::lead(num2), color="Sim. inv."),alpha = 0.5, na.rm = TRUE) +
+    #geom_segment(aes(x = depth1, y = num2, xend = dplyr::lead(depth1), yend =dplyr::lead(num2), color="Sim. inv."),alpha = 0.5, na.rm = TRUE, linetype = "dashed") +
+    geom_line(aes(x = depth1, y = num2, color="Sim. inv."),alpha = 1.0, na.rm = TRUE, linetype = "longdash") +
     # Axis titles.
     labs(title =paste("Soil profile id:", unique(data2$id)), y = expression(" Bq m"^"-3"), x = "Depth m", color=NULL) +
     # Legend.
-    scale_color_manual(values =c("Exp. inv."="blue", "Sim. inv."="red"), labels = c(bquote(Exp.Inv. == .(expinv)~"Bq m"^"-2"),bquote(Sim.Inv. == .(siminv)~"Bq m"^"-2"))) +
+    scale_color_manual(values =c("Exp. inv."="blue", "Sim. inv."="red"), labels = c(bquote("Exp. Inv." == .(round(expinv))~"Bq m"^"-2"),bquote("Sim. Inv." == .(round(siminv))~"Bq m"^"-2"))) +
     # General aspects.
     theme(plot.margin = margin(10, 10, 10, 10),
           panel.background = element_rect(fill = "white"),
@@ -146,7 +197,27 @@ plot <- function(data1, data2, dir1, dir2, AxisMaxValue, cell_value) {
     # Text
     geom_text(data= data2_mod, aes(x=midPROF,y=y_range_max/2,label=as.character(round(invCS))), size = 3 , parse = TRUE,color="blue") +
     # General aspects.
-    theme(plot.margin = margin(10, 10, 10, 10),
+    theme(plot.margin = margin(10, 10, 10, 0),
+          panel.background = element_rect(fill = "white"),
+          axis.text.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks = element_blank(),
+          panel.grid.minor = element_blank())
+
+  p_text2 <- ggplot(plot_data, mapping = aes(x = depth1, y = y_range)) +
+    # Range and orientation of the y-axis of inventory step-plot.
+    coord_flip(ylim= y_range, expand = FALSE) +
+    # X Y -axis and its labels.
+    scale_x_reverse() +
+    scale_y_continuous(position="right")+
+    # one laine to determine the y axis.
+    geom_line(aes(x=depth1, y=0), color = "grey") +
+    #  titles.
+    labs(y= expression("Bq m"^"-2"),x = NULL  ) +
+    # Text
+    geom_text(data= data3_mod, aes(x=midPROF,y=y_range_max/2,label=as.character(round(invCS))), size = 3 , parse = TRUE,color="red") +
+    # General aspects.
+    theme(plot.margin = margin(10, 0, 10, 0),
           panel.background = element_rect(fill = "white"),
           axis.text.x = element_blank(),
           axis.text.y = element_blank(),
@@ -154,7 +225,7 @@ plot <- function(data1, data2, dir1, dir2, AxisMaxValue, cell_value) {
           panel.grid.minor = element_blank())
 
   # Combined plots
-  p <- p_base + p_text + plot_layout(ncol = 2, widths = c(4, 1))
+  p <- p_base + p_text + p_text2 + plot_layout(ncol = 3, widths = c(4, 0.9, 0.9))
 
   # Display the plot
   plot_file <- file.path(results_folder, paste0(tail(data2$id, 1),"_plot.png"))
